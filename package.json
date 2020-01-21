@@ -12,6 +12,7 @@
     "test": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "bluebird": "^3.7.2",
     "blueimp-canvas-to-blob": "^3.14.0",
     "eslint-plugin-prettier": "^3.1.0",
     "vue": "^2.5.17"

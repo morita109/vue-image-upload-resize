@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <image-uploader
+      ref="imageUploader"
       :preview="true"
       :className="['fileinput', { 'fileinput--loaded': hasImage }]"
       :capture="false"
@@ -42,6 +43,9 @@ export default {
       this.image = output
       console.log(output)
     },
+    click: function() {
+      this.$refs.imageUploader.click()
+    }
   },
 }
 </script>

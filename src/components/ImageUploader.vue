@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img v-show="imagePreview" :src="imagePreview" class="img-preview" width="400" /> <input :id="id" :class="className" type="file" @change="uploadFile" :accept="accept" :capture="capture" />
+    <img v-show="imagePreview" :src="imagePreview" class="img-preview" width="400" /> <input ref="inputFile" :id="id" :class="className" style="display: none" type="file" @change="uploadFile" :accept="accept" :capture="capture" multiple />
     <slot name="upload-label"></slot>
   </div>
 </template>
@@ -41,6 +41,7 @@
 
 import EXIF from '../utils/exif.js'
 import dataURLtoBlob from 'blueimp-canvas-to-blob'
+import {Promise} from "bluebird"
 
 export default {
   name: 'image-uploader',
@@ -200,19 +201,28 @@ export default {
       currentFile: {},
       dimensions: {},
       exifData: {},
+      outputs: [],
     }
   },
 
   methods: {
+    click() {
+      this.$refs.inputFile.click()
+    },
     /**
      * Get file from input
      * @param  {object} event
      */
     uploadFile(e) {
-      const file = e.target.files && e.target.files.length ? e.target.files[0] : null
-      if (file) {
+      const files = e.target.files && e.target.files.length ? e.target.files : null
+      if (files) {
         this.emitLoad()
-        this.handleFile(file)
+        const that = this;
+        Promise.map(files, function(file) {
+          return that.handleFile(file)
+        }).then(outputs => {
+          that.$emit('onComplete', outputs)
+        })
       }
     },
 
@@ -231,7 +241,7 @@ export default {
     },
 
     emitComplete() {
-      this.$emit('onComplete')
+      this.$emit('onComplete', this.outputs)
     },
 
     /**
@@ -240,43 +250,47 @@ export default {
      * @return {}         nada (yet)
      */
     handleFile(file) {
-      this.log('handleFile() is called with file:', 2, file)
-      this.currentFile = file
+      return new Promise((resolve, reject) => {
 
-      const mimetype = file.type.split('/') // NB: Not supprted by Safari on iOS !??! @todo: TEST!
-      const isImage = mimetype[0] === 'image'
-      const doNotResize = typeof this.doNotResize === 'string' ? [this.doNotResize] : this.doNotResize // cast to array
+        this.log('handleFile() is called with file:', 2, file)
+        this.currentFile = file
 
-      // Don't resize if not image or doNotResize is set
-      if (!isImage || doNotResize.includes('*') || doNotResize.includes(mimetype[1])) {
-        this.log('No Resize, return file directly')
-        this.emitEvent(file) // does NOT respect the output format prop
-        this.emitComplete()
-      } else {
-        const that = this
-        const img = document.createElement('img')
-        const reader = new window.FileReader()
+        const mimetype = file.type.split('/') // NB: Not supprted by Safari on iOS !??! @todo: TEST!
+        const isImage = mimetype[0] === 'image'
+        const doNotResize = typeof this.doNotResize === 'string' ? [this.doNotResize] : this.doNotResize // cast to array
 
-        reader.onload = function(e) {
-          that.log('reader.onload() is triggered', 2)
+        // Don't resize if not image or doNotResize is set
+        if (!isImage || doNotResize.includes('*') || doNotResize.includes(mimetype[1])) {
+          this.log('No Resize, return file directly')
+          this.emitEvent(file) // does NOT respect the output format prop
+          this.emitComplete()
+        } else {
+          const that = this
 
-          img.src = e.target.result
-          img.onload = function() {
-            that.log('img.onload() is triggered', 2)
+          const img = document.createElement('img')
+          const reader = new window.FileReader()
+          
+          reader.onload = function(e) {
+            that.log('reader.onload() is triggered', 2)
 
-            // this extracts exifdata if available. Returns an empty object if not
-            EXIF.getData(img, function() {
-              that.exifData = this.exifdata
-              if (Object.keys(that.exifData).length === 0) {
-                that.log('ImageUploader: exif data found and extracted', 2)
-              }
-            })
+            img.src = e.target.result
+            img.onload = function() {
+              that.log('img.onload() is triggered', 2)
 
-            that.scaleImage(img, that.exifData.Orientation)
+              // this extracts exifdata if available. Returns an empty object if not
+              EXIF.getData(img, function() {
+                that.exifData = this.exifdata
+                if (Object.keys(that.exifData).length === 0) {
+                  that.log('ImageUploader: exif data found and extracted', 2)
+                }
+              })
+
+              resolve(that.scaleImage(img, that.exifData.Orientation))
+            }
           }
+          reader.readAsDataURL(file)
         }
-        reader.readAsDataURL(file)
-      }
+      })
     },
 
     /**
@@ -398,9 +412,12 @@ export default {
 
       // Return the new image
       // this.emitEvent(this.currentFile) // DEBUG
-      this.emitEvent(this.formatOutput(imageData))
+      const output = this.formatOutput(imageData)
+      this.outputs.push(output)
+      return output
+      // this.emitEvent(output)
 
-      this.emitComplete()
+      // this.emitComplete()
     },
 
     /**
