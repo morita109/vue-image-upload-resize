@@ -12,7 +12,6 @@
     "test": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "bluebird": "^3.7.2",
     "blueimp-canvas-to-blob": "^3.14.0",
     "eslint-plugin-prettier": "^3.1.0",
     "vue": "^2.5.17"
@@ -29,7 +28,8 @@
     "babel-jest": "^24.8.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0-0",
-    "vue-template-compiler": "^2.5.17"
+    "vue-template-compiler": "^2.5.17",
+    "bluebird": "^3.7.2"
   },
   "browser": "dist/vue-image-upload-resize.umd.min.js",
   "files": [

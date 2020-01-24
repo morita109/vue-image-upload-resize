@@ -1,6 +1,7 @@
 <template>
   <div>
-    <img v-show="imagePreview" :src="imagePreview" class="img-preview" width="400" /> <input ref="inputFile" :id="id" :class="className" style="display: none" type="file" @change="uploadFile" :accept="accept" :capture="capture" multiple />
+    <img v-show="imagePreview" :src="imagePreview" class="img-preview" width="400" />
+    <input ref="inputFile" :id="id" :class="className" style="display: none" type="file" @change="uploadFile" :accept="accept" :capture="capture" multiple />
     <slot name="upload-label"></slot>
   </div>
 </template>
@@ -41,7 +42,7 @@
 
 import EXIF from '../utils/exif.js'
 import dataURLtoBlob from 'blueimp-canvas-to-blob'
-import {Promise} from "bluebird"
+import { Promise } from 'bluebird'
 
 export default {
   name: 'image-uploader',
@@ -217,7 +218,7 @@ export default {
       const files = e.target.files && e.target.files.length ? e.target.files : null
       if (files) {
         this.emitLoad()
-        const that = this;
+        const that = this
         Promise.map(files, function(file) {
           return that.handleFile(file)
         }).then(outputs => {
@@ -250,8 +251,7 @@ export default {
      * @return {}         nada (yet)
      */
     handleFile(file) {
-      return new Promise((resolve, reject) => {
-
+      return new Promise(resolve => {
         this.log('handleFile() is called with file:', 2, file)
         this.currentFile = file
 
@@ -269,7 +269,7 @@ export default {
 
           const img = document.createElement('img')
           const reader = new window.FileReader()
-          
+
           reader.onload = function(e) {
             that.log('reader.onload() is triggered', 2)
 

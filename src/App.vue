@@ -45,7 +45,7 @@ export default {
     },
     click: function() {
       this.$refs.imageUploader.click()
-    }
+    },
   },
 }
 </script>
