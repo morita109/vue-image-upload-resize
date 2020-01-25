@@ -210,6 +210,9 @@ export default {
     click() {
       this.$refs.inputFile.click()
     },
+    reset() {
+      this.$refs.inputFile.value = ""
+    },
     /**
      * Get file from input
      * @param  {object} event

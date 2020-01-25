@@ -8922,18 +8922,21 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"42181fd4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ImageUploader.vue?vue&type=template&id=87ea1308&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"42181fd4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/ImageUploader.vue?vue&type=template&id=4df79d4c&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('img',{directives:[{name:"show",rawName:"v-show",value:(_vm.imagePreview),expression:"imagePreview"}],staticClass:"img-preview",attrs:{"src":_vm.imagePreview,"width":"400"}}),_c('input',{ref:"inputFile",class:_vm.className,staticStyle:{"display":"none"},attrs:{"id":_vm.id,"type":"file","accept":_vm.accept,"capture":_vm.capture,"multiple":""},on:{"change":_vm.uploadFile}}),_vm._t("upload-label")],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/ImageUploader.vue?vue&type=template&id=87ea1308&
+// CONCATENATED MODULE: ./src/components/ImageUploader.vue?vue&type=template&id=4df79d4c&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.function.name.js
 var es6_function_name = __webpack_require__("7f7f");
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
 var web_dom_iterable = __webpack_require__("ac6a");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.iterator.js
+var es6_array_iterator = __webpack_require__("cadf");
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.keys.js
 var es6_object_keys = __webpack_require__("456d");
@@ -9872,6 +9875,7 @@ var bluebird = __webpack_require__("f684");
 
 
 
+
 //
 //
 //
@@ -10080,6 +10084,9 @@ var bluebird = __webpack_require__("f684");
   methods: {
     click: function click() {
       this.$refs.inputFile.click();
+    },
+    reset: function reset() {
+      this.$refs.inputFile.value = "";
     },
 
     /**
